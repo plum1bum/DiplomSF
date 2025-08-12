@@ -1,0 +1,37 @@
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL,
+    fam VARCHAR(80) NOT NULL,
+    name VARCHAR(80) NOT NULL,
+    otc VARCHAR(80)
+);
+
+CREATE TABLE IF NOT EXISTS pereval_added (
+    id SERIAL PRIMARY KEY,
+    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id INTEGER REFERENCES users(id),
+    beauty_title VARCHAR(255),
+    title VARCHAR(255) NOT NULL,
+    other_titles VARCHAR(255),
+    connect VARCHAR(255),
+    add_time TIME,
+    status VARCHAR(10) DEFAULT 'new' CHECK (status IN ('new', 'pending', 'accepted', 'rejected')),
+    coord_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS coords (
+    id SERIAL PRIMARY KEY,
+    latitude DECIMAL(10, 7) NOT NULL,
+    longitude DECIMAL(10, 7) NOT NULL,
+    height INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS images (
+    id SERIAL PRIMARY KEY,
+    pereval_id INTEGER REFERENCES pereval_added(id),
+    img BYTEA,
+    title VARCHAR(255)
+);
+
+ALTER TABLE pereval_added ADD CONSTRAINT fk_coord FOREIGN KEY (coord_id) REFERENCES coords(id);
